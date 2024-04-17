@@ -4,6 +4,7 @@ require_relative 'code_breaker'
 class Game
   SIZE_OF_CODE = 4
   RANGE_OF_USABLE_NUMBERS = (1..6).freeze
+  GOD_VIEW = false # change this if you want to know the code from the start
 
   attr_accessor :round
 
@@ -11,6 +12,7 @@ class Game
     @maker = CodeMaker.new(maker_computer)
     @breaker = CodeBreaker.new(breaker_computer)
     @code = @maker.create_code
+    p @code if GOD_VIEW
     @round = 1
   end
 
@@ -34,7 +36,8 @@ class Game
       end
     end
     # puts "You got #{number_of_correct} red heads and #{number_of_partial} white heads from the guess"
-    # puts "#{'■ ' * number_of_correct} #{'□ ' * number_of_partial}"
+    print "Your guess feedback: "
+    puts "#{'■ ' * result[:number_of_correct]} #{'□ ' * result[:number_of_partial]}"
 
     result
   end
@@ -44,17 +47,16 @@ class Game
     puts "This is round number #{@round}"
     guess = @breaker.make_guess
     puts "The Guess is : #{guess}"
-    p feedback(guess)
+    feedback(guess)
     guess
   end
 
   def winner?(guess)
-    p @code
-    p guess
     @code == guess
   end
 
   def end_game(won)
+    puts "______________GAME OVER_______________"
     if won
       puts "The code Breaker won the game in #{@round}, congratulations!"
     else
